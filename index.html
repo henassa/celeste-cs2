@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg" />
+    <link rel="manifest" href="./manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="./icons/apple-touch-icon.png" />
+    <meta name="theme-color" content="#0a0a0a" />
+    <meta name="description" content="Free, local-first demo review and scrim tool for Counter-Strike 2." />
+    <title>Celeste CS2</title>
+      <script>
+      // Garde-fou : si l'app ne s'affiche pas (erreur au chargement), on le dit au lieu d'un écran vide
+      window.__svErrors = [];
+      window.addEventListener('error', function (e) { window.__svErrors.push(String(e.message || e.error)); });
+      setTimeout(function () {
+        var root = document.getElementById('root');
+        if (root && !root.childElementCount) {
+          root.innerHTML = '<div style="font:14px system-ui;color:#e5e5e5;max-width:640px;margin:15vh auto;padding:24px;border:1px solid #333;border-radius:12px;background:#171717">'
+            + '<b>Celeste did not start.</b><br><br>Press F12, open the Console tab and send a screenshot of the red messages.<br><br>'
+            + '<code style="color:#f87171">' + (window.__svErrors.join('<br>') || 'No error captured yet.') + '</code></div>';
+        }
+      }, 8000);
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

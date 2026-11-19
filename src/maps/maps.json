@@ -1,0 +1,310 @@
+{
+ "cs_alpine": {
+  "posX": -2107.0,
+  "posY": 4687.0,
+  "scale": 6.5296063,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "cs_agency": {
+  "posX": -2597.0,
+  "posY": 2079.0,
+  "scale": 4.1817436,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "cs_assault": {
+  "posX": 4041.0,
+  "posY": 7838.0,
+  "scale": 4.6,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "cs_italy": {
+  "posX": -2647.0,
+  "posY": 2592.0,
+  "scale": 4.6,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "cs_militia": {
+  "posX": -1474.0,
+  "posY": 2296.0,
+  "scale": 4.5,
+  "lowerThresholdZ": 25.0,
+  "hasLower": true
+ },
+ "cs_office": {
+  "posX": -1838.0,
+  "posY": 1858.0,
+  "scale": 4.1,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "cs_shelter": {
+  "posX": -3448.0,
+  "posY": 3805.0,
+  "scale": 3.311857,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_ancient": {
+  "posX": -2953.0,
+  "posY": 2164.0,
+  "scale": 5.0,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_anubis": {
+  "posX": -2796.0,
+  "posY": 3328.0,
+  "scale": 5.22,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_assembly": {
+  "posX": 1628.0,
+  "posY": 4512.0,
+  "scale": 2.84,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_aztec": {
+  "posX": -3200.0,
+  "posY": 2841.0,
+  "scale": 6.0,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_basalt": {
+  "posX": -2345.0,
+  "posY": 2391.0,
+  "scale": 4.37,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_boulder": {
+  "posX": -3273.0,
+  "posY": 2930.0,
+  "scale": 2.8491137,
+  "lowerThresholdZ": 62.0,
+  "hasLower": true
+ },
+ "de_brewery": {
+  "posX": -4122.0,
+  "posY": 4394.0,
+  "scale": 2.1820312,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_cache": {
+  "posX": -2000.0,
+  "posY": 3250.0,
+  "scale": 5.5,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_canals": {
+  "posX": -2496.0,
+  "posY": 1792.0,
+  "scale": 4.0,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_cbble": {
+  "posX": -3840.0,
+  "posY": 3072.0,
+  "scale": 6.0,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_debris": {
+  "posX": -3015.0,
+  "posY": 2919.0,
+  "scale": 1.9445695,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_dogtown": {
+  "posX": -1741.0,
+  "posY": 3295.0,
+  "scale": 2.0323243,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_dust": {
+  "posX": -2850.0,
+  "posY": 4073.0,
+  "scale": 6.0,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_dust2": {
+  "posX": -2476.0,
+  "posY": 3239.0,
+  "scale": 4.4,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_edin": {
+  "posX": -383.0,
+  "posY": 4420.0,
+  "scale": 4.803717,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_eldorado": {
+  "posX": -3548.0,
+  "posY": 2571.0,
+  "scale": 2.0656068,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_fachwerk": {
+  "posX": -2311.0,
+  "posY": 2874.0,
+  "scale": 2.5537856,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_golden": {
+  "posX": -856.0,
+  "posY": 2399.0,
+  "scale": 4.506695,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_grail": {
+  "posX": -4395.0,
+  "posY": 4203.0,
+  "scale": 2.1756864,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_inferno": {
+  "posX": -2087.0,
+  "posY": 3870.0,
+  "scale": 4.9,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_jura": {
+  "posX": -2126.0,
+  "posY": 2389.0,
+  "scale": 2.504188,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_memento": {
+  "posX": -2111.0,
+  "posY": 2534.0,
+  "scale": 3.9720395,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_mills": {
+  "posX": -4810.0,
+  "posY": -320.0,
+  "scale": 5.148437,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_mirage": {
+  "posX": -3230.0,
+  "posY": 1713.0,
+  "scale": 5.0,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_nuke": {
+  "posX": -3453.0,
+  "posY": 2887.0,
+  "scale": 7.0,
+  "lowerThresholdZ": -495.0,
+  "hasLower": true
+ },
+ "de_overpass": {
+  "posX": -4831.0,
+  "posY": 1781.0,
+  "scale": 5.2,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_palacio": {
+  "posX": -2443.0,
+  "posY": 1896.0,
+  "scale": 3.8676212,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_palais": {
+  "posX": -1353.0,
+  "posY": 2044.0,
+  "scale": 2.8003397,
+  "lowerThresholdZ": 103.0,
+  "hasLower": true
+ },
+ "de_poseidon": {
+  "posX": -1046.0,
+  "posY": 1166.0,
+  "scale": 3.0124886,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_rooftop": {
+  "posX": -1847.0,
+  "posY": 2301.0,
+  "scale": 1.914732,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_sanctum": {
+  "posX": -1846.0,
+  "posY": 674.0,
+  "scale": 3.658203,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_stronghold": {
+  "posX": -2786.0,
+  "posY": 2598.0,
+  "scale": 2.9476247,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_thera": {
+  "posX": -85.0,
+  "posY": 2261.0,
+  "scale": 4.846961,
+  "lowerThresholdZ": -4.0,
+  "hasLower": true
+ },
+ "de_train": {
+  "posX": -2308.0,
+  "posY": 2078.0,
+  "scale": 4.082077,
+  "lowerThresholdZ": null,
+  "hasLower": true
+ },
+ "de_vertigo": {
+  "posX": -3168.0,
+  "posY": 1762.0,
+  "scale": 4.0,
+  "lowerThresholdZ": 11700.0,
+  "hasLower": true
+ },
+ "de_warden": {
+  "posX": -3150.0,
+  "posY": 2681.0,
+  "scale": 5.642361,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ },
+ "de_whistle": {
+  "posX": -1825.0,
+  "posY": 1104.0,
+  "scale": 2.8,
+  "lowerThresholdZ": null,
+  "hasLower": false
+ }
+}

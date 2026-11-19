@@ -1,0 +1,10 @@
+{
+  "appId": "app.celeste.cs2",
+  "appName": "Celeste CS2",
+  "webDir": "dist",
+  "backgroundColor": "#0a0a0a",
+  "android": {
+    "allowMixedContent": false,
+    "webContentsDebuggingEnabled": false
+  }
+}

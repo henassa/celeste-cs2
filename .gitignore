@@ -1,0 +1,17 @@
+node_modules
+dist
+*.local
+.DS_Store
+# Démos de test : jamais dans le repo (lourdes et privées)
+tests/demos/*
+!tests/demos/.gitkeep
+!tests/demos/*.expect.json
+map-sources/
+tools/
+
+# Fichiers extraits de ton jeu (Valve) : jamais dans le dépôt
+public/anim/
+
+# Builds de l'app de bureau
+release/
+exceptions.txt

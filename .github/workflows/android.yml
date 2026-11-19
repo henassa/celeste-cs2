@@ -1,0 +1,65 @@
+# Construit l'app Android (.apk) à chaque tag vX.Y.Z (ou à la main) et la joint à la release.
+# Sans clé de signature : APK de debug, installable directement (signé par la clé de debug).
+# Avec les secrets ANDROID_KEYSTORE_BASE64 / ANDROID_KEYSTORE_PASSWORD / ANDROID_KEY_ALIAS / ANDROID_KEY_PASSWORD :
+# APK de release signé avec ta clé (les mises à jour s'installent par-dessus la version précédente).
+name: Android
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  apk:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+      - run: npm run build
+      - run: npx cap sync android
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+      - name: Build the APK
+        working-directory: android
+        env:
+          KEYSTORE_B64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.ANDROID_KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.ANDROID_KEY_PASSWORD }}
+        run: |
+          chmod +x gradlew
+          VERSION=$(node -p "require('../package.json').version")
+          if [ -n "$KEYSTORE_B64" ]; then
+            echo "$KEYSTORE_B64" | base64 -d > release.keystore
+            ./gradlew assembleRelease -PcelesteVersion=$VERSION \
+              -Pandroid.injected.signing.store.file=$PWD/release.keystore \
+              -Pandroid.injected.signing.store.password="$KEYSTORE_PASSWORD" \
+              -Pandroid.injected.signing.key.alias="$KEY_ALIAS" \
+              -Pandroid.injected.signing.key.password="$KEY_PASSWORD"
+            cp app/build/outputs/apk/release/app-release.apk ../Celeste-CS2-$VERSION.apk
+            rm release.keystore
+          else
+            ./gradlew assembleDebug -PcelesteVersion=$VERSION
+            cp app/build/outputs/apk/debug/app-debug.apk ../Celeste-CS2-$VERSION-debug.apk
+          fi
+      - uses: actions/upload-artifact@v4
+        with:
+          name: celeste-cs2-android
+          path: Celeste-CS2-*.apk
+      - uses: softprops/action-gh-release@v2
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          draft: true
+          files: Celeste-CS2-*.apk

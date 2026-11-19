@@ -1,0 +1,124 @@
+/* Tailwind ne cherche les classes que dans src/ : jamais dans map-sources/ (exports du jeu, plusieurs Go) ni tools/. */
+@import "tailwindcss" source(".");
+@import "@fontsource-variable/geist";
+@import "@fontsource-variable/geist-mono";
+
+/* Direction artistique : thème neutre sombre de shadcn/ui (valeurs officielles), monochrome.
+   Camps en noir/blanc : CT = pastille claire, T = pastille sombre cerclée. Seul le rouge
+   « destructive » sert d'alerte (bombe, feu, HE, PV bas). */
+
+@theme inline {
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono Variable", ui-monospace, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-overlay: var(--overlay);
+  --color-overlay-foreground: var(--overlay-foreground);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* --- Thème unique : shadcn/ui neutre sombre, monochrome --- */
+:root {
+  --radius: 0.625rem;
+  --r-cone-alpha: 0.35;
+  --background: oklch(0.145 0 0);
+  --foreground: oklch(0.985 0 0);
+  --card: oklch(0.205 0 0);
+  --card-foreground: oklch(0.985 0 0);
+  --popover: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --primary: oklch(0.922 0 0);
+  --primary-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --muted: oklch(0.269 0 0);
+  --muted-foreground: oklch(0.708 0 0);
+  --accent: oklch(0.371 0 0);
+  --accent-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 15%);
+  --ring: oklch(0.556 0 0);
+  --overlay: oklch(0.145 0 0 / 85%);
+  --overlay-foreground: oklch(0.985 0 0);
+
+  --ct: oklch(0.985 0 0);        --ct-ink: oklch(0.145 0 0); --ct-ring: oklch(0.145 0 0);
+  --t: oklch(0.269 0 0);         --t-ink: oklch(0.985 0 0);  --t-ring: oklch(0.922 0 0);
+  --ct-bar: oklch(0.985 0 0);    --t-bar: oklch(0.556 0 0);
+  --ct-text: oklch(0.985 0 0);   --t-text: oklch(0.708 0 0);
+
+  --r-filter: grayscale(1) brightness(0.72) contrast(1.05);
+  --r-outline: oklch(0.145 0 0);
+  --r-label: oklch(0.985 0 0);
+  --r-label-halo: oklch(0.145 0 0 / 85%);
+  --r-smoke: oklch(0.85 0 0 / 50%);
+  --r-smoke-edge: oklch(0.985 0 0 / 80%);
+  --r-fire: oklch(0.704 0.191 22.216 / 32%);
+  --r-fire-edge: oklch(0.704 0.191 22.216 / 90%);
+  --r-bomb: oklch(0.704 0.191 22.216);
+  color-scheme: dark;
+}
+
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+* { border-color: var(--border); }
+::selection { background: var(--primary); color: var(--primary-foreground); }
+
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+
+/* Pastilles et barres de camp (gérées par les variables ci-dessus) */
+.badge-ct { background: var(--ct); color: var(--ct-ink); }
+.badge-t  { background: var(--t);  color: var(--t-ink); box-shadow: inset 0 0 0 1px var(--t-ring); }
+.bar-ct { background: var(--ct-bar); }
+.bar-t  { background: var(--t-bar); }
+.text-side-ct { color: var(--ct-text); }
+.text-side-t  { color: var(--t-text); }
+
+/* Impression (fiche anti-strat) : encre noire sur papier blanc, seule la fiche est imprimée */
+@media print {
+  @page { margin: 14mm; }
+  :root {
+    --background: #fff; --foreground: #0a0a0a; --card: #fff; --card-foreground: #0a0a0a;
+    --muted: #f5f5f5; --muted-foreground: #525252; --border: #d4d4d4; --primary: #0a0a0a; --primary-foreground: #fff;
+    color-scheme: light;
+  }
+  html, body, #root { height: auto; background: #fff; overflow: visible; }
+  .brief li, .brief tr, .brief h2, .brief h3 { break-inside: avoid; break-after: avoid-page; }
+}
+
+/* Curseurs (heatmaps, réglages) : piste fine, pastille ronde */
+.slider::-webkit-slider-runnable-track { height: 4px; border-radius: 9999px; background: linear-gradient(to right, var(--foreground) var(--pct), var(--muted) var(--pct)); }
+.slider::-moz-range-track { height: 4px; border-radius: 9999px; background: var(--muted); }
+.slider::-moz-range-progress { height: 4px; border-radius: 9999px; background: var(--foreground); }
+.slider::-webkit-slider-thumb { -webkit-appearance: none; margin-top: -5px; width: 14px; height: 14px; border-radius: 9999px; background: var(--foreground); border: 2px solid var(--card); }
+.slider::-moz-range-thumb { width: 12px; height: 12px; border-radius: 9999px; background: var(--foreground); border: 2px solid var(--card); }
+.slider:focus-visible { outline: none; }
+.slider:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 3px color-mix(in oklab, var(--ring) 50%, transparent); }

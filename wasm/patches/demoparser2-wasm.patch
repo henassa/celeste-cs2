@@ -1,0 +1,281 @@
+diff --git a/src/csgoproto/build.rs b/src/csgoproto/build.rs
+index c7a3dda..f328e4d 100644
+--- a/src/csgoproto/build.rs
++++ b/src/csgoproto/build.rs
+@@ -1,38 +1 @@
+-use std::{io::Result, process::Command};
+-
+-fn main() -> Result<()> {
+-    println!("cargo::rerun-if-changed=GameTracking-CS2/Protobufs/demo.proto");
+-
+-    Command::new("git")
+-        .args([
+-            "clone",
+-            "https://github.com/SteamDatabase/GameTracking-CS2.git",
+-            "--depth=1",
+-        ])
+-        .status()?;
+-
+-    let protos = vec![
+-        "GameTracking-CS2/Protobufs/steammessages.proto",
+-        "GameTracking-CS2/Protobufs/gcsdk_gcmessages.proto",
+-        "GameTracking-CS2/Protobufs/demo.proto",
+-        "GameTracking-CS2/Protobufs/cstrike15_gcmessages.proto",
+-        "GameTracking-CS2/Protobufs/cstrike15_usermessages.proto",
+-        "GameTracking-CS2/Protobufs/usermessages.proto",
+-        "GameTracking-CS2/Protobufs/networkbasetypes.proto",
+-        "GameTracking-CS2/Protobufs/engine_gcmessages.proto",
+-        "GameTracking-CS2/Protobufs/netmessages.proto",
+-        "GameTracking-CS2/Protobufs/network_connection.proto",
+-        "GameTracking-CS2/Protobufs/cs_usercmd.proto",
+-        "GameTracking-CS2/Protobufs/usercmd.proto",
+-        "GameTracking-CS2/Protobufs/gameevents.proto",
+-        "GameTracking-CS2/Protobufs/cs_gameevents.proto",
+-    ];
+-
+-    prost_build::Config::new()
+-        .format(false)
+-        .out_dir("src")
+-        .default_package_filename("protobuf")
+-        .bytes(["."])
+-        .enum_attribute(".", "#[derive(::strum::EnumIter)]")
+-        .compile_protos(&protos, &["GameTracking-CS2/Protobufs/"])
+-}
++fn main() {}
+diff --git a/src/parser/Cargo.toml b/src/parser/Cargo.toml
+index deea16f..55ebeca 100644
+--- a/src/parser/Cargo.toml
++++ b/src/parser/Cargo.toml
+@@ -4,6 +4,7 @@ version = "0.1.1"
+ edition = "2021"
+ 
+ [dependencies]
++web-time = "1"
+ prost = "0.13.3"
+ snap = "1.1.0"
+ ahash = "0.8.3"
+diff --git a/src/parser/src/parse_demo.rs b/src/parser/src/parse_demo.rs
+index 314f423..04d290d 100644
+--- a/src/parser/src/parse_demo.rs
++++ b/src/parser/src/parse_demo.rs
+@@ -65,7 +65,7 @@ impl<'a> Parser<'a> {
+     }
+     pub fn parse_demo(&mut self, demo_bytes: &[u8]) -> Result<DemoOutput, DemoParserError> {
+         let _prof = std::env::var("CS2_PROF").is_ok();
+-        let _t = std::time::Instant::now();
++        let _t = web_time::Instant::now();
+         let mut first_pass_parser = FirstPassParser::new(&self.input);
+         let first_pass_output = first_pass_parser.parse_demo(demo_bytes, false)?;
+         if _prof {
+@@ -132,14 +132,14 @@ impl<'a> Parser<'a> {
+     }
+     fn second_pass_single_threaded(&self, outer_bytes: &[u8], first_pass_output: FirstPassOutput) -> Result<DemoOutput, DemoParserError> {
+         let prof = std::env::var("CS2_PROF").is_ok();
+-        let mut t = std::time::Instant::now();
++        let mut t = web_time::Instant::now();
+         let mut parser = SecondPassParser::new(first_pass_output.clone(), 16, true, None)?;
+         parser.start(outer_bytes)?;
+-        if prof { eprintln!("[prof] second_pass start(): {:.3}s", t.elapsed().as_secs_f64()); t = std::time::Instant::now(); }
++        if prof { eprintln!("[prof] second_pass start(): {:.3}s", t.elapsed().as_secs_f64()); t = web_time::Instant::now(); }
+         let second_pass_output = parser.create_output();
+-        if prof { eprintln!("[prof] create_output: {:.3}s", t.elapsed().as_secs_f64()); t = std::time::Instant::now(); }
++        if prof { eprintln!("[prof] create_output: {:.3}s", t.elapsed().as_secs_f64()); t = web_time::Instant::now(); }
+         let mut outputs = self.combine_outputs(&mut vec![second_pass_output], first_pass_output);
+-        if prof { eprintln!("[prof] combine_outputs: {:.3}s", t.elapsed().as_secs_f64()); t = std::time::Instant::now(); }
++        if prof { eprintln!("[prof] combine_outputs: {:.3}s", t.elapsed().as_secs_f64()); t = web_time::Instant::now(); }
+         if let Some(new_df) = self.rm_unwanted_ticks(&mut outputs.df) {
+             outputs.df = new_df;
+         }
+diff --git a/src/parser/src/second_pass/entities.rs b/src/parser/src/second_pass/entities.rs
+index 1d59d6e..9e436e5 100644
+--- a/src/parser/src/second_pass/entities.rs
++++ b/src/parser/src/second_pass/entities.rs
+@@ -367,12 +367,12 @@ impl<'a> SecondPassParser<'a> {
+         events_to_emit: &mut Vec<GameEventInfo>,
+         is_fullpacket: bool,
+     ) -> Result<(), DemoParserError> {
+-        let _pp = crate::second_pass::parser::prof_on().then(std::time::Instant::now);
++        let _pp = crate::second_pass::parser::prof_on().then(web_time::Instant::now);
+         let n_updates = self.parse_paths(bitreader)?;
+         if let Some(t) = _pp {
+             crate::second_pass::parser::PROF_PATHS_NS.with(|c| c.set(c.get() + t.elapsed().as_nanos() as u64));
+         }
+-        let _pd = crate::second_pass::parser::prof_on().then(std::time::Instant::now);
++        let _pd = crate::second_pass::parser::prof_on().then(web_time::Instant::now);
+         let n_updated_values = self.decode_entity_update(bitreader, entity_id, n_updates, is_fullpacket, is_baseline, events_to_emit)?;
+         if let Some(t) = _pd {
+             crate::second_pass::parser::PROF_DECODE_NS.with(|c| c.set(c.get() + t.elapsed().as_nanos() as u64));
+diff --git a/src/parser/src/second_pass/parser.rs b/src/parser/src/second_pass/parser.rs
+index af77a3c..eb5fa8b 100644
+--- a/src/parser/src/second_pass/parser.rs
++++ b/src/parser/src/second_pass/parser.rs
+@@ -251,11 +251,11 @@ impl<'a> SecondPassParser<'a> {
+             let ok = match NetMessageType::from(msg_type as i32) {
+                 svc_PacketEntities => {
+                     if should_parse_entities {
+-                        let _pt = prof_on().then(std::time::Instant::now);
++                        let _pt = prof_on().then(web_time::Instant::now);
+                         self.parse_packet_ents(msg_bytes, is_fullpacket)?;
+                         if let Some(t) = _pt { PROF_ENTS_NS.with(|c| c.set(c.get() + t.elapsed().as_nanos() as u64)); }
+                         if !is_fullpacket {
+-                            let _ct = prof_on().then(std::time::Instant::now);
++                            let _ct = prof_on().then(web_time::Instant::now);
+                             self.collect_entities();
+                             if let Some(t) = _ct { PROF_COLLECT_NS.with(|c| c.set(c.get() + t.elapsed().as_nanos() as u64)); }
+                         }
+diff --git a/src/wasm/Cargo.lock b/src/wasm/Cargo.lock
+index 9b6e65e..b9ad0da 100644
+--- a/src/wasm/Cargo.lock
++++ b/src/wasm/Cargo.lock
+@@ -42,12 +42,6 @@ version = "2.9.0"
+ source = "registry+https://github.com/rust-lang/crates.io-index"
+ checksum = "5c8214115b7bf84099f1309324e63141d4c5d7cc26862f97a0a857dbefe165bd"
+ 
+-[[package]]
+-name = "bitter"
+-version = "0.7.1"
+-source = "registry+https://github.com/rust-lang/crates.io-index"
+-checksum = "f777c49153c6244286ce2e3ba0352295c4cbfe4b3368bedf7ec8ffe9dc5920d7"
+-
+ [[package]]
+ name = "bumpalo"
+ version = "3.17.0"
+@@ -318,7 +312,6 @@ version = "0.1.1"
+ dependencies = [
+  "ahash",
+  "bit_reverse",
+- "bitter",
+  "bytes",
+  "csgoproto",
+  "derive_more",
+@@ -335,6 +328,7 @@ dependencies = [
+  "regex",
+  "serde",
+  "snap",
++ "web-time",
+ ]
+ 
+ [[package]]
+@@ -786,6 +780,16 @@ dependencies = [
+  "wasm-bindgen",
+ ]
+ 
++[[package]]
++name = "web-time"
++version = "1.1.0"
++source = "registry+https://github.com/rust-lang/crates.io-index"
++checksum = "5a6580f308b1fad9207618087a65c04e7a10bc77e02c8e84e9b00dd4b12fa0bb"
++dependencies = [
++ "js-sys",
++ "wasm-bindgen",
++]
++
+ [[package]]
+ name = "windows-sys"
+ version = "0.59.0"
+diff --git a/src/wasm/src/lib.rs b/src/wasm/src/lib.rs
+index d2ce169..bce0919 100644
+--- a/src/wasm/src/lib.rs
++++ b/src/wasm/src/lib.rs
+@@ -307,6 +307,7 @@ pub fn parseGrenades(
+     file: Vec<u8>,
+     extra: Option<Vec<JsValue>>,
+     grenades: Option<bool>,
++    struct_of_arrays: Option<bool>,
+ ) -> Result<JsValue, JsError> {
+     let mut extra = match extra {
+         Some(p) => p.iter().map(|s| s.as_string().unwrap()).collect::<Vec<_>>(),
+@@ -331,7 +332,7 @@ pub fn parseGrenades(
+         wanted_events: vec![],
+         parse_ents: true,
+         wanted_ticks: vec![],
+-        parse_projectiles: false,
++        parse_projectiles: true,
+         only_header: false,
+         list_props: false,
+         only_convars: false,
+@@ -355,6 +356,10 @@ pub fn parseGrenades(
+         prop_infos: prop_infos,
+         inner: output.df.into(),
+     };
++    // Patch local : sortie en colonnes (SoA) en option, bien plus rapide côté JS
++    if struct_of_arrays == Some(true) {
++        return serde_wasm_bindgen::to_value(&helper).map_err(|e| JsError::new(&format!("{}", e)));
++    }
+     let result = soa_to_aos(helper);
+     let s = match serde_wasm_bindgen::to_value(&result) {
+         Ok(s) => s,
+@@ -396,3 +401,73 @@ pub fn parseHeader(file: Vec<u8>) -> Result<JsValue, JsError> {
+         Err(e) => return Err(JsError::new(&format!("{}", e))),
+     }
+ }
++
++/// Voix enregistrée dans la démo (svc_VoiceData), en colonnes pour rester légère :
++/// un seul buffer d'octets et, par paquet, son tick, son SteamID, son format, sa fréquence,
++/// sa position dans le buffer et le découpage en frames (packet_offsets).
++#[wasm_bindgen]
++pub fn parseVoice(file: Vec<u8>) -> Result<JsValue, JsError> {
++    let settings = ParserInputs {
++        wanted_players: vec![],
++        real_name_to_og_name: HashMap::default().into(),
++        wanted_player_props: vec![],
++        wanted_other_props: vec![],
++        wanted_events: vec![],
++        parse_ents: false,
++        wanted_ticks: vec![],
++        parse_projectiles: false,
++        only_header: false,
++        list_props: false,
++        only_convars: false,
++        huffman_lookup_table: &vec![],
++        order_by_steamid: false,
++        wanted_prop_states: HashMap::default().into(),
++        fallback_bytes: None,
++        parse_grenades: false,
++        parse_weapons: false,
++        vector_props_as_lists: false,
++    };
++    let mut parser = Parser::new(settings, ForceSingleThreaded);
++    let output = match parser.parse_demo(&file) {
++        Ok(output) => output,
++        Err(e) => return Err(JsError::new(&format!("{}", e))),
++    };
++    let mut ticks: Vec<i32> = vec![];
++    let mut steamids: Vec<String> = vec![];
++    let mut formats: Vec<i32> = vec![];
++    let mut rates: Vec<u32> = vec![];
++    let mut starts: Vec<u32> = vec![];
++    let mut lens: Vec<u32> = vec![];
++    let mut frame_counts: Vec<u32> = vec![];
++    let mut frame_offsets: Vec<u32> = vec![];
++    let mut bytes: Vec<u8> = vec![];
++    for (tick, packet) in output.voice_data {
++        if let Some(audio) = &packet.audio {
++            let data = audio.voice_data();
++            if data.is_empty() {
++                continue;
++            }
++            ticks.push(tick);
++            steamids.push(packet.xuid().to_string());
++            formats.push(audio.format.unwrap_or(-1));
++            rates.push(audio.sample_rate());
++            starts.push(bytes.len() as u32);
++            lens.push(data.len() as u32);
++            frame_counts.push(audio.packet_offsets.len() as u32);
++            frame_offsets.extend_from_slice(&audio.packet_offsets);
++            bytes.extend_from_slice(data);
++        }
++    }
++    let obj = js_sys::Object::new();
++    let set = |k: &str, v: &JsValue| js_sys::Reflect::set(&obj, &JsValue::from_str(k), v).map(|_| ()).map_err(|_| JsError::new("voice output"));
++    set("ticks", &js_sys::Int32Array::from(&ticks[..]).into())?;
++    set("steamids", &serde_wasm_bindgen::to_value(&steamids).map_err(|e| JsError::new(&format!("{}", e)))?)?;
++    set("formats", &js_sys::Int32Array::from(&formats[..]).into())?;
++    set("sampleRates", &js_sys::Uint32Array::from(&rates[..]).into())?;
++    set("starts", &js_sys::Uint32Array::from(&starts[..]).into())?;
++    set("lengths", &js_sys::Uint32Array::from(&lens[..]).into())?;
++    set("frameCounts", &js_sys::Uint32Array::from(&frame_counts[..]).into())?;
++    set("frameOffsets", &js_sys::Uint32Array::from(&frame_offsets[..]).into())?;
++    set("bytes", &js_sys::Uint8Array::from(&bytes[..]).into())?;
++    Ok(obj.into())
++}
